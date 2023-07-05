@@ -448,7 +448,9 @@
             <div style="text-align: center;"><em>Configurations</em></div>
             <hr>
 
-            <!--  TOGGLES -->
+            <!--  TOGGLES here are the toggle buttons
+            TODO: find out how to create a new button and set its action to the right backend config
+             -->
 
             <div class="settings">
                 <div class="settingsText">Preview before sending</div>
@@ -511,6 +513,14 @@
                 <div class="settingsText">Background map</div>
                 <div style="float: right;"><label class="switch">
                     <input id="background_map" type="checkbox" onchange="toggle_changed(this);">
+                    <span class="slider round"></span></label></div>
+            </div>
+            <hr>
+
+            <div class="settings">
+                <div class="settingsText"> <del> It is high noon </del> </div> <!-- remove del after implememntation -->
+                <div style="float: right;"><label class="switch">
+                    <input id="timer_undelivered_messages" type="checkbox" onchange="toggle_changed(this);">
                     <span class="slider round"></span></label></div>
             </div>
             <hr>

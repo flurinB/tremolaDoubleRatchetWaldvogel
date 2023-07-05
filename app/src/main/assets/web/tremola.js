@@ -1005,10 +1005,11 @@ function b2f_initialize(id) {
         tremola.settings = {}
     let nm;
     for (nm in tremola.settings)
-        setSetting(nm, tremola.settings[nm])
+        setSetting(nm, tremola.settings[nm])//TODO Figure out what this shit does
     load_chat_list()
     load_contact_list()
-
+    //TODO: here after implementing the "someMethod_Timer_Delete()"
+    //TODO: analyse the other methods and figure out how to talk to backend
     closeOverlay();
     setScenario('chats');
 }

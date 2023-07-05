@@ -11,11 +11,13 @@ function get_default_settings() {
     return {
         'enable_preview': false,
         'background_map': true,
-        'pub_autoconnect': true,
+        'pub_autoconnect': true,//in bachelor thesis: pubs are currently non-functional in Tremola maybe this is the reason it does not respond to any action
         'wifi_autoconnect': true,
         'show_shortnames': true,
         'hide_forgotten_conv': true,
-        'hide_forgotten_contacts': true
+        'hide_forgotten_contacts': true,
+        'timer_undelivered_messages': false
+        //TODO: add here 'timer_undelivered_messages': false
     }
 }
 
@@ -56,6 +58,11 @@ function applySetting(nm, val) {
     } else if (nm === 'hide_forgotten_contacts') {// Reload the contacts, toggling visibility of the forgotten ones
         load_contact_list();
     }
+    //TODO: add a new nm val. toggle is used it jumps to here but not all actions seem to have a else if hmm
+    // } else if (nm === 'timer_undelivered_messages' ) {
+    // someMethod_Timer_Delete();
+    // }
+
 }
 
 /**
