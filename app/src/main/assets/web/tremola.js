@@ -46,7 +46,7 @@ function menu_sync() {
   closeOverlay();
 }
 */
-
+let timeThreshold;
 /**
  * Sets up the members scenario after the plus button was pressed in the chats scenario.
  */
@@ -1034,4 +1034,38 @@ function deleteOldMessages() {
     }
                                          //"Uncaught TypeError: Cannot read properties of undefined (reading 'posts')", source: file:///android_asset/web/tremola.js (1019)
 }
+
+//TODO: maybe embelish the layout if possible for the menu: button on side instead of row and hr line
+function setThreshold() {
+    var textarea = document.getElementById("timer-text");
+    var textareaValue = textarea.value;
+    var dropDown = document.getElementById("time-select");
+    var selectValue = dropDown.value;
+    var regex = /^\d+$/;
+
+    if (regex.test(textareaValue)) {
+        console.log("is a number", textareaValue);
+        if (selectValue === "seconds") {
+            timeThreshold = textareaValue * 1000;
+        } else if (selectValue === "minutes") {
+            timeThreshold = textareaValue * 60 * 1000;
+        } else if (selectValue === "hours") {
+            timeThreshold = textareaValue * 60 * 60 * 1000;
+        } else if (selectValue === "days") {
+            timeThreshold = textareaValue * 60 * 60 * 1000 * 24;
+        } else if (selectValue === "weeks") {
+            timeThreshold = textareaValue * 60 * 60 * 1000 * 24 * 7;
+        } else {
+            console.log("no unit selected");
+            return
+        }
+        //for debugging
+        console.log("value in: unit of ", selectValue);
+        console.log("threshold in milliseconds", timeThreshold);
+    } else {
+        console.log("is not a number", textareaValue);
+        return
+    }
+}
+
 // --- eof

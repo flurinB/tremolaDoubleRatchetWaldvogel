@@ -518,12 +518,35 @@
             <hr>
 
             <div class="settings">
-                <div class="settingsText"> <del> It is high noon </del> </div> <!-- remove del after implememntation -->
+                <div class="settingsText"> It is high noon  </div> <!-- remove del after implememntation -->
                 <div style="float: right;"><label class="switch">
                     <input id="timer_undelivered_messages" type="checkbox" onchange="toggle_changed(this);">
                     <span class="slider round"></span></label></div>
             </div>
-            <hr>
+
+            <!-- on change it appears in the settings. Used to select the duration of Unread messages -->
+            <!-- implement connection between selection and effective unit -->
+            <!-- dropdown menu and input textarea html-->
+
+            <div class="settings">
+                <div id="menuDiv">
+                    <label for="time-select">Unit of Time:</label>
+                    <select name="time" id="time-select">
+                        <option value="">--Units--</option>
+                        <option value="seconds">Seconds</option>
+                        <option value="minutes">Minutes</option>
+                        <option value="hours">Hours</option>
+                        <option value="days">Days</option>
+                        <option value="weeks">Weeks</option>
+                    </select>
+                    <div id="text-area">
+                        <textarea id="timer-text" name="timer-text" rows="2" cols="5" placeholder="Numbers"></textarea>
+                        <button id='btn:timer' class="flat passive buttontext" onclick="setThreshold()"
+                                style="background-image: url('img/send.svg'); width: 35px; height: 50px; margin-bottom: 4px;">
+                        </button>
+                    </div>
+                </div>
+            </div>
 
             <!--  DANGER ZONE -->
 
