@@ -57,11 +57,9 @@ function applySetting(nm, val) {
         load_chat_list();
     } else if (nm === 'hide_forgotten_contacts') {// Reload the contacts, toggling visibility of the forgotten ones
         load_contact_list();
+    } else if (nm === 'timer_undelivered_messages') {//GIO: new here for testing toggle
+        deleteOldMessages();
     }
-    //TODO: add a new nm val. toggle is used it jumps to here but not all actions seem to have a else if hmm
-    // } else if (nm === 'timer_undelivered_messages' ) {
-    // someMethod_Timer_Delete();
-    // }
 
 }
 
