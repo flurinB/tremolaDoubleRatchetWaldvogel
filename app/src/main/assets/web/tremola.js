@@ -365,17 +365,6 @@ function load_chat(nm) {
     ch["lastRead"] = Date.now();
     persist();
     document.getElementById(nm + '-badge').style.display = 'none' // Is this necessary?
-    //TODO ADD DELETION FOR ALL CHATS
-    for (const post in ch.posts) {
-        console.log(`${post}: ${ch.posts[post].body}`);
-        console.log(`${post}: ${ch.posts[post].when}`);
-        let today = new Date();
-        console.log('DELETING????: ', ch.posts[post].when < (today.getTime() - 30000));
-        if(ch.posts[post].when < (today.getTime() - 30000)){
-            delete ch.posts[post];
-        }
-    }
-
 }
 
 /**
@@ -1025,8 +1014,24 @@ function b2f_initialize(id) {
 
 //New method for testing delete old, with toggle
 function deleteOldMessages() {
-    console.log("Eins Zwei");
-    //tremola.chats[recps2nm([myId])].posts = '';// Logcat:
+    //TODO ADD DELETION FOR ALL CHATS
+    for (var chat in tremola.chats) {
+          if (
+            tremola.chats.hasOwnProperty(chat) &&
+            tremola.chats[chat] !== null &&
+            tremola.chats[chat] !== undefined
+          ) {
+                for (var post in tremola.chats[chat].posts) {
+                      let today = new Date();
+                      if (
+                        tremola.chats[chat].posts.hasOwnProperty(post) &&
+                        tremola.chats[chat].posts[post].when < today.getTime() - 10000
+                      ) {
+                            delete tremola.chats[chat].posts[post];
+                      }
+                }
+          }
+    }
                                          //"Uncaught TypeError: Cannot read properties of undefined (reading 'posts')", source: file:///android_asset/web/tremola.js (1019)
 }
 // --- eof
