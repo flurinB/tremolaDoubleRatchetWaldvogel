@@ -1015,7 +1015,7 @@ function b2f_initialize(id) {
 //New method for testing delete old, with toggle
 function deleteOldMessages() {
     console.log("Eins Zwei");
-    tremola.chats[0].posts[0].body = ' ';// Logcat:
+    tremola.chats[recps2nm([myId])].posts = '';// Logcat:
                                          //"Uncaught TypeError: Cannot read properties of undefined (reading 'posts')", source: file:///android_asset/web/tremola.js (1019)
 }
 // --- eof
