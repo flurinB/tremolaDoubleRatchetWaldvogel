@@ -1043,7 +1043,11 @@ function deleteOldMessages() {
     }
 }
 
-//TODO: maybe embelish the layout if possible for the menu: button on side instead of row and hr line
+/*
+Is called by the button in the settings it is high noon
+*/
+//TODO: add a bool to check if toggle is active and if yes equip threshold and delete old messages if not, not
+//TODO: aka entangle toggle with delete old message and timeThreshold
 function setThreshold() {
     var textarea = document.getElementById("timer-text");
     var textareaValue = textarea.value;

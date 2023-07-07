@@ -58,7 +58,7 @@ function applySetting(nm, val) {
     } else if (nm === 'hide_forgotten_contacts') {// Reload the contacts, toggling visibility of the forgotten ones
         load_contact_list();
     } else if (nm === 'timer_undelivered_messages') {//GIO: new here for testing toggle
-        //TODO add the commands to display or not for the div dropdown menu
+        //TODO add the function for delete old messages
         var selection = document.getElementById("menuDiv");
         //var value = selection.value;
           if (selection.style.display === "none") {
