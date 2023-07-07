@@ -218,6 +218,24 @@ textarea {
     margin-top: 6px;
     font-weight: 500;
 }
+/* new settings by Gio */
+.threshold {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1px;
+}
+
+.settingsThresh {
+    height: 4em;
+    padding: 6px;
+    background: rgba(255, 255, 255, 0.75);
+    display: flex;
+    justify-content: space-between;
+}
+/* idk it seems as it does not make any difference */
+#btn:timer {
+  margin-left: 5px;
+}
 
 /* --------------------------------------------------------------------------- */
 
