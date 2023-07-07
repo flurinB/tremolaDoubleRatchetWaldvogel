@@ -365,20 +365,9 @@ function load_chat(nm) {
     ch["lastRead"] = Date.now();
     persist();
     document.getElementById(nm + '-badge').style.display = 'none' // Is this necessary?
-    // TODO test if the firstRead time is set correctly
-    // Added to check when the post has first been read
-    for (const p in ch.posts) {
-        //if the post has not been read, add firstRead property
-        if(ch.posts.hasOwnProperty(p) &&
-           ch.posts[p] !== null &&
-           ch.posts[p] !== undefined &&
-           ch.posts[p].when - tremola.chats.lastRead <= 0) {
-            let today = new Date();
-            ch.posts[p].firstRead = today.getTime();
-            console.log('FIRST READ POST: ', ch.posts[post].body);
-            console.log('FIRST READ TIME: ', ch.posts[post].firstRead);
-        }
-    }
+
+    // deletes the expired messages after the threshold time is met
+    deleteOldMessages();
 }
 
 /**
@@ -1045,7 +1034,7 @@ function deleteOldMessages() {
                         tremola.chats[chat].posts.hasOwnProperty(post) &&
                         tremola.chats[chat].posts[post] !== null &&
                         tremola.chats[chat].posts[post] !== undefined &&
-                        today.getTime() - tremola.chats[chat].posts[post].firstRead >= 10000
+                        today.getTime() - tremola.chats[chat].posts[post].when >= 10000
                       ) {
                             delete tremola.chats[chat].posts[post];
                       }
