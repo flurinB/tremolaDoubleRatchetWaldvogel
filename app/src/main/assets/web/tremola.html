@@ -528,7 +528,7 @@
             <!-- implement connection between selection and effective unit -->
             <!-- dropdown menu and input textarea html-->
 
-            <div class="settings">
+            <div class="settingsThresh">
                 <div id="menuDiv">
                     <label for="time-select">Unit of Time:</label>
                     <select name="time" id="time-select">
@@ -539,14 +539,16 @@
                         <option value="days">Days</option>
                         <option value="weeks">Weeks</option>
                     </select>
-                    <div id="text-area">
+                    <div class="threshold" id="text-area">
                         <textarea id="timer-text" name="timer-text" rows="2" cols="5" placeholder="Numbers"></textarea>
                         <button id='btn:timer' class="flat passive buttontext" onclick="setThreshold()"
-                                style="background-image: url('img/send.svg'); width: 35px; height: 50px; margin-bottom: 4px;">
+                                style="background-image: url('img/send.svg'); width: 40px; height: 40px; margin-bottom: 4px;">
                         </button>
                     </div>
                 </div>
             </div>
+
+            <hr>
 
             <!--  DANGER ZONE -->
 
