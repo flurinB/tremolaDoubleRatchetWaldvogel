@@ -365,6 +365,20 @@ function load_chat(nm) {
     ch["lastRead"] = Date.now();
     persist();
     document.getElementById(nm + '-badge').style.display = 'none' // Is this necessary?
+    // TODO test if the firstRead time is set correctly
+    // Added to check when the post has first been read
+    for (const p in ch.posts) {
+        //if the post has not been read, add firstRead property
+        if(ch.posts.hasOwnProperty(p) &&
+           ch.posts[p] !== null &&
+           ch.posts[p] !== undefined &&
+           ch.posts[p].when - tremola.chats.lastRead <= 0) {
+            let today = new Date();
+            ch.posts[p].firstRead = today.getTime();
+            console.log('FIRST READ POST: ', ch.posts[post].body);
+            console.log('FIRST READ TIME: ', ch.posts[post].firstRead);
+        }
+    }
 }
 
 /**
@@ -1012,9 +1026,12 @@ function b2f_initialize(id) {
     setScenario('chats');
 }
 
-//New method for testing delete old, with toggle
+/**
+ * Deletes the posts that exceed the specified threshold of time in the settings.
+ * Uses the firstRead property of the posts to determine whether this threshold has been exceeded
+ */
 function deleteOldMessages() {
-    //TODO ADD DELETION FOR ALL CHATS
+    //TODO TEST 
     for (var chat in tremola.chats) {
           if (
             tremola.chats.hasOwnProperty(chat) &&
@@ -1023,16 +1040,18 @@ function deleteOldMessages() {
           ) {
                 for (var post in tremola.chats[chat].posts) {
                       let today = new Date();
+                      //if the post has first been read more than a certain amount of time, delete it
                       if (
                         tremola.chats[chat].posts.hasOwnProperty(post) &&
-                        tremola.chats[chat].posts[post].when < today.getTime() - 10000
+                        tremola.chats[chat].posts[post] !== null &&
+                        tremola.chats[chat].posts[post] !== undefined &&
+                        today.getTime() - tremola.chats[chat].posts[post].firstRead >= 10000
                       ) {
                             delete tremola.chats[chat].posts[post];
                       }
                 }
           }
     }
-                                         //"Uncaught TypeError: Cannot read properties of undefined (reading 'posts')", source: file:///android_asset/web/tremola.js (1019)
 }
 
 //TODO: maybe embelish the layout if possible for the menu: button on side instead of row and hr line
