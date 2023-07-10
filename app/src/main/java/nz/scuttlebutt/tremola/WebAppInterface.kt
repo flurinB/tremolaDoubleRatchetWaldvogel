@@ -486,7 +486,7 @@ class WebAppInterface(
             if (DEBUG) {
                 Log.d(TAG, "sendEventToFrontend: event.pri is null.")
             }
-            JSONObject("")
+            JSONObject()
         } else {
             if (DEBUG) {
                 Log.d(TAG, "sendEventToFrontend: Contents of pri: ${event.pri}.")

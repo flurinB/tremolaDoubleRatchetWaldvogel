@@ -58,13 +58,14 @@ function applySetting(nm, val) {
     } else if (nm === 'hide_forgotten_contacts') {// Reload the contacts, toggling visibility of the forgotten ones
         load_contact_list();
     } else if (nm === 'timer_undelivered_messages') {//GIO: new here for testing toggle
-        //TODO add the function for delete old messages
+        //TODO how to save the timer values persistently
         var selection = document.getElementById("menuDiv");
-        //var value = selection.value;
-          if (selection.style.display === "none") {
-            selection.style.display = "block";
+          if (val) {
+            del_msg_bool = true;
+            selection.style.display = "block";//makes the element visible
           } else {
-            selection.style.display = "none";
+            del_msg_bool = false;
+            selection.style.display = "none";//makes the element not visible
           }
         //deleteOldMessages();
     }
