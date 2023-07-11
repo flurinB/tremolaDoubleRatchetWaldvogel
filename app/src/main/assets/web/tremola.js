@@ -294,6 +294,7 @@ function new_post(s) {
     // TODO escapeHTML() might be the better choice here
     var draft = unicodeStringToTypedArray(document.getElementById('draft').value);
 
+    // If the message is self-deleting, format to standard used
     if(draft.startsWith(":deleteafter")){
        draft = getNewDraftWithDateOfMessageDeletion(draft);
     }
@@ -429,6 +430,9 @@ function load_chat_title(ch) {
  * Loads the list of chats in the chats scenario. Chats are sorted by touch date.
  */
 function load_chat_list() {
+    // Set the "locked" property for each chat
+    set_locked_property();
+
     const meOnly = recps2nm([myId]);
     // console.log('meOnly', meOnly)
     document.getElementById('lst:chats').innerHTML = '';
@@ -460,11 +464,15 @@ function load_chat_item(nm) {
     mem = recps2display(tremola.chats[nm].members);
     item = document.createElement('div');
     item.style = "padding: 0px 5px 10px 5px; margin: 3px 3px 6px 3px;";
+
+    // Add double lock symbol for chats with double-ratchet encryption
+    let locked = tremola.chats[nm].locked ? "&#x1F512;&#x1F512;" : "&#x1F512;";
+
     // Switch background depending on if the chat was forgotten.
     if (tremola.chats[nm].forgotten) bg = ' gray'; else bg = ' light';
     row = "<button class='chat_item_button w100" + bg + "' onclick='load_chat(\"" + nm + "\");' style='overflow: "
         + "hidden; position: relative;'><div style='white-space: nowrap;'><div style='text-overflow: ellipsis; "
-        + "overflow: hidden;'>" + tremola.chats[nm].alias + "</div><div style='text-overflow: clip; "
+        + "overflow: hidden;'>" + locked + " " +tremola.chats[nm].alias + "</div><div style='text-overflow: clip; "
         + "overflow: ellipsis;'><font size=-2>" + escapeHTML(mem) + "</font></div></div>";
     badgeId = nm + "-badge";
     badge = "<div id='" + badgeId + "' style='display: none; position: absolute; right: 0.5em; bottom: 0.9em; "
@@ -1140,6 +1148,19 @@ function setThreshold() {
     }
 }
 
+/**
+ * Sets the "locked" property of a chat according to whether the chat is between two people
+ * (only chats between two people are double-ratchet encrypted)
+ */
 
-
+function set_locked_property(){
+    for(var chat in tremola.chats){
+        var amountOfRecipients = recps2nm(tremola.chats[chat].members).split("@").length - 1;
+        if(amountOfRecipients == 2){
+            tremola.chats[chat].locked = true;
+        } else {
+            tremola.chats[chat].locked = false;
+        }
+    }
+}
 // --- eof
