@@ -975,10 +975,9 @@ function b2f_new_event(e) {
                                      //  considered read, if the user visited the chat without connection between the
                                      //  the time of sending and reception.
             };
-            //TODO FIX
+
             if(ch["posts"][e.header.ref].body.startsWith(";date;of;message;deletion;")){
                 handleMessageWithDeletionOnReceiver(ch["posts"][e.header.ref]);
-                console.log("ch[posts][e.header.ref].body:",ch["posts"][e.header.ref].body);
             }
             if (ch["touched"] < e.header.tst)
                 ch["touched"] = e.header.tst
@@ -1003,20 +1002,18 @@ function handleMessageWithDeletionOnReceiver(p){
     var indexOfEndingChar = bodyWithoutPrefix.indexOf(';');
     var timeOfDeletion = bodyWithoutPrefix.substring(0,indexOfEndingChar).trim();
     p.deleteAfter = parseInt(timeOfDeletion);
-    console.log("timeOfDeletion (receiver):",timeOfDeletion);
     p.body = bodyWithoutPrefix.substring(timeOfDeletion.length);
     p.body = p.body.substring(1);
     var dateOfDeletion = new Date(p.deleteAfter),
-        dateFormat = [dateOfDeletion.getMonth()+1,
+        dateFormat = [
                    dateOfDeletion.getDate(),
+                   dateOfDeletion.getMonth()+1,
                    dateOfDeletion.getFullYear()].join('/')+' '+
                   [dateOfDeletion.getHours(),
                    dateOfDeletion.getMinutes(),
-                   dateOfDeletion.getSeconds()].join(':');
-    console.log("dateOfDeletion1", dateOfDeletion.getTime());
-    console.log("dateOfDeletion:",dateFormat);
-    p.body = "This Message will be deleted on " + dateFormat + p.body;
-    console.log("p.body:",p.body);
+                   dateOfDeletion.getSeconds()].join(':')
+    //TODO Add color for message deletion text
+    p.body = p.body + "\n\nThis Message will be deleted on " + dateFormat ;
 }
 
 /**
@@ -1096,11 +1093,6 @@ function deleteOldMessages(chat) {
             tremola.chats[chat].posts[post] !== null &&
             tremola.chats[chat].posts[post] !== undefined
           ) {
-                console.log("HERE THE POST:", tremola.chats[chat].posts[post].body);
-                console.log("tremola.chats[chat].posts[post].deleteAfter:", tremola.chats[chat].posts[post].deleteAfter);
-                console.log("tremola.chats[chat].posts[post].deleteAfter !== null:", tremola.chats[chat].posts[post].deleteAfter !== null);
-                console.log("tremola.chats[chat].posts[post].deleteAfter !== undefined:",tremola.chats[chat].posts[post].deleteAfter !== undefined);
-                console.log("tremola.chats[chat].posts[post].deleteAfter <= today.getTime():", tremola.chats[chat].posts[post].deleteAfter <= today.getTime());
                 if(del_msg_bool && (today.getTime() - tremola.chats[chat].posts[post].when >= timeThreshold)){
                     delete tremola.chats[chat].posts[post];
                 } else if (tremola.chats[chat].posts[post].hasOwnProperty('deleteAfter') &&
