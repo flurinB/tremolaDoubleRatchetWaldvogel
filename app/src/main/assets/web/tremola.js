@@ -380,9 +380,7 @@ function load_chat(nm) {
     pl = document.getElementById("lst:posts");
 
     // deletes the expired messages after the threshold time is met
-    if (del_msg_bool) {
-            deleteOldMessages(nm);
-    }
+    deleteOldMessages(nm);
 
     // Clears the current lists of posts.
     while (pl.rows.length) {
@@ -987,7 +985,8 @@ function b2f_new_event(e) {
             //TODO FIX
             if(ch["posts"][e.header.ref].body.startsWith(";date;of;message;deletion;")){
                 handleMessageWithDeletionOnReceiver(ch["posts"][e.header.ref]);
-                console.log("timeOfDeletion 2 (receiver):",ch["posts"][e.header.ref].deleteAfter);
+                console.log("ch[posts][e.header.ref].body:",ch["posts"][e.header.ref].body);
+
             }
         }
         // if (curr_scenario == "chats") // the updated conversation could bubble up
@@ -1003,9 +1002,22 @@ function handleMessageWithDeletionOnReceiver(p){
     var body = p.body;
     var bodyWithoutPrefix = body.substring(26);
     var indexOfEndingChar = bodyWithoutPrefix.indexOf(';');
-    var timeOfDeletion = bodyWithoutPrefix.substring(0,indexOfEndingChar);
-    p.deleteAfter = timeOfDeletion;
-    console.log("timeOfDeletion (receiver):",p.deleteAfter);
+    var timeOfDeletion = bodyWithoutPrefix.substring(0,indexOfEndingChar).trim();
+    p.deleteAfter = parseInt(timeOfDeletion);
+    console.log("timeOfDeletion (receiver):",timeOfDeletion);
+    p.body = bodyWithoutPrefix.substring(timeOfDeletion.length);
+    p.body = p.body.substring(1);
+    var dateOfDeletion = new Date(p.deleteAfter),
+        dateFormat = [dateOfDeletion.getMonth()+1,
+                   dateOfDeletion.getDate(),
+                   dateOfDeletion.getFullYear()].join('/')+' '+
+                  [dateOfDeletion.getHours(),
+                   dateOfDeletion.getMinutes(),
+                   dateOfDeletion.getSeconds()].join(':');
+    console.log("dateOfDeletion1", dateOfDeletion.getTime());
+    console.log("dateOfDeletion:",dateFormat);
+    p.body = "This Message will be deleted on " + dateFormat + p.body;
+    console.log("p.body:",p.body);
 }
 
 /**
@@ -1085,9 +1097,14 @@ function deleteOldMessages(chat) {
             tremola.chats[chat].posts[post] !== null &&
             tremola.chats[chat].posts[post] !== undefined
           ) {
-                if(today.getTime() - tremola.chats[chat].posts[post].when >= timeThreshold){
+                console.log("HERE THE POST:", tremola.chats[chat].posts[post].body);
+                console.log("tremola.chats[chat].posts[post].deleteAfter:", tremola.chats[chat].posts[post].deleteAfter);
+                console.log("tremola.chats[chat].posts[post].deleteAfter !== null:", tremola.chats[chat].posts[post].deleteAfter !== null);
+                console.log("tremola.chats[chat].posts[post].deleteAfter !== undefined:",tremola.chats[chat].posts[post].deleteAfter !== undefined);
+                console.log("tremola.chats[chat].posts[post].deleteAfter <= today.getTime():", tremola.chats[chat].posts[post].deleteAfter <= today.getTime());
+                if(del_msg_bool && (today.getTime() - tremola.chats[chat].posts[post].when >= timeThreshold)){
                     delete tremola.chats[chat].posts[post];
-                } else if (tremola.chats[chat].posts[post].hasOwnProperty(deleteAfter) &&
+                } else if (tremola.chats[chat].posts[post].hasOwnProperty('deleteAfter') &&
                     tremola.chats[chat].posts[post].deleteAfter !== null &&
                     tremola.chats[chat].posts[post].deleteAfter !== undefined &&
                     tremola.chats[chat].posts[post].deleteAfter <= today.getTime()
@@ -1097,8 +1114,6 @@ function deleteOldMessages(chat) {
 
           }
     }
-
-
 }
 
 //TODO: the threshold settings are I think reseted after closing and opening app investigate
