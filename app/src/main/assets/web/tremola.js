@@ -975,6 +975,11 @@ function b2f_new_event(e) {
                                      //  considered read, if the user visited the chat without connection between the
                                      //  the time of sending and reception.
             };
+            //TODO FIX
+            if(ch["posts"][e.header.ref].body.startsWith(";date;of;message;deletion;")){
+                handleMessageWithDeletionOnReceiver(ch["posts"][e.header.ref]);
+                console.log("ch[posts][e.header.ref].body:",ch["posts"][e.header.ref].body);
+            }
             if (ch["touched"] < e.header.tst)
                 ch["touched"] = e.header.tst
             if (curr_scenario === "posts" && curr_chat === conv_name) {
@@ -982,12 +987,6 @@ function b2f_new_event(e) {
                 ch["lastRead"] = Date.now();
             }
             set_chats_badge(conv_name)
-            //TODO FIX
-            if(ch["posts"][e.header.ref].body.startsWith(";date;of;message;deletion;")){
-                handleMessageWithDeletionOnReceiver(ch["posts"][e.header.ref]);
-                console.log("ch[posts][e.header.ref].body:",ch["posts"][e.header.ref].body);
-
-            }
         }
         // if (curr_scenario == "chats") // the updated conversation could bubble up
         load_chat_list();
