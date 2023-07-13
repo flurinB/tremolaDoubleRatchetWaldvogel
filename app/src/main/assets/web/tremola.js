@@ -49,6 +49,7 @@ function menu_sync() {
 var timeThreshold;
 //the bool seems not to be saved idk
 var del_msg_bool;//before = false;
+var unitNumberTuple = ["","",""];
 /**
  * Sets up the members scenario after the plus button was pressed in the chats scenario.
  */
@@ -895,7 +896,7 @@ function resetTremola() { // wipes browser-side content
 function persist() {
     // console.log(tremola);
     window.localStorage.setItem("tremola", JSON.stringify(tremola));
-    window.localStorage.setItem("dropdown", JSON.stringify(unitNumberTuple));
+    //window.localStorage.setItem("dropdown", JSON.stringify(unitNumberTuple));
 }
 //TODO: this new here. test and check if used appropriately in code
 //TODO: saves the set dropdown settings for threshold. the unit number tuple is set by the setThreshold() function after the button is pressed and persistDropdown() is called inside setThreshold at the end
@@ -909,8 +910,8 @@ function persistDropdown() {
 function getDropdown() {
     unitNumberTuple = JSON.parse(window.localStorage.getItem("dropdown"));
     //logs for debug purposes
-    console.log('unitNumberTuple 0, 1 and 2 with parse from json: ', unitNumberTuple[0], unitNumberTuple[1], unitNumberTuple[2]);
-    console.log('json dropdown parse: ', JSON.parse(window.localStorage.getItem("dropdown")));
+    //console.log('unitNumberTuple 0, 1 and 2 with parse from json: ', unitNumberTuple[0], unitNumberTuple[1], unitNumberTuple[2]);
+    //console.log('json dropdown parse: ', JSON.parse(window.localStorage.getItem("dropdown")));
 }
 
 //TODO: do some test GIO
@@ -918,14 +919,17 @@ function getDropdown() {
 function setDropdown() {
     var dropdown = document.getElementById("time-select");
     var textareaDrop = document.getElementById("timer-text");
-    unitNumberTuple = JSON.parse(window.localStorage.getItem("dropdown"));
-    var storedUnit = unitNumberTuple[0];//should be unit
-    var storedNumber = unitNumberTuple[1];
-    del_msg_bool = unitNumberTuple[2];
-    if (storedUnit && storedNumber) {
-        dropdown.value = storedUnit;
-        textareaDrop.value = storedNumber;
+    unitNumberTuple = JSON.parse(window.localStorage.getItem("dropdown"));//this object is null when app is started for the first time ever
+    if (unitNumberTuple != null && unitNumberTuple != undefined) {
+        var storedUnit = unitNumberTuple[0];//uncaught error null when the app is started first time ever
+        var storedNumber = unitNumberTuple[1];
+        del_msg_bool = unitNumberTuple[2];
+        if (storedUnit && storedNumber) {
+            dropdown.value = storedUnit;
+            textareaDrop.value = storedNumber;
+        }
     }
+
 }
 
 function b2f_local_peer(p, status) { // wireless peer: online, offline, connected, disconnected
@@ -1151,7 +1155,7 @@ var textarea;
 var textareaValue;
 var dropDown;
 var selectValue;
-var unitNumberTuple = ["","",""];
+//var unitNumberTuple = ["","",""];
 function setThreshold() {
     textarea = document.getElementById("timer-text");//value as element
     textareaValue = textarea.value;//value in numbers
@@ -1159,10 +1163,11 @@ function setThreshold() {
     selectValue = dropDown.value;//the unit
     //TODO: recover if saved the storage of the threshold from previous session.
     //TODO: needs to check if it is entered to many times aka unnötiges abfragen/performance
-    if (!textareaValue && !selectValue) {
+    getDropdown();//uncaught is gone
+    if (!textareaValue && !selectValue && unitNumberTuple != null && unitNumberTuple != undefined) {
         //if is entered when textarea and selectvalue are empty or default after restarting the app because the displayed inputs from saved storage does not trigger the entering values and selection I think
         console.log("enters if statement in l 1151: ",selectValue,unitNumberTuple[0], textareaValue, unitNumberTuple[1]);
-        getDropdown();//setsThe unitnumbertuple from storage
+        //getDropdown();//setsThe unitnumbertuple from storage
         console.log("enters if statement in l 1151: ",selectValue,unitNumberTuple[0], textareaValue, unitNumberTuple[1]);
         //recovers the saved values from the storage with the tuple
         textareaValue = unitNumberTuple[1];
