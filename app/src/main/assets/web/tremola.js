@@ -296,7 +296,7 @@ function new_post(s) {
     var draft = unicodeStringToTypedArray(document.getElementById('draft').value);
 
     // If the message is self-deleting, format to standard used
-    if(draft.startsWith(":deleteafter")){
+    if(draft.startsWith(":deleteafter;")){
        draft = getNewDraftWithDateOfMessageDeletion(draft);
     }
     // Concatenated IDs of all chat members
@@ -308,10 +308,11 @@ function new_post(s) {
     closeOverlay();
 }
 
-/* This function takes a message with the prefix ':deleteafter' (should be in format ":deleteafter(0-9)*;(s|m|h|d|w)")
+/* This function takes a message with the prefix ':deleteafter;' (should be in format ":deleteafter;(0-9)*;(s|m|h|d|w)")
 and gives back the date when the message should be deleted*/
 function getNewDraftWithDateOfMessageDeletion(draft){
-    var withoutDeleteAfter = draft.substring(12);
+    //also removes the first ";"
+    var withoutDeleteAfter = draft.substring(13);
     var indexOfEndingChar = withoutDeleteAfter.indexOf(';');
     var amountOfTime = withoutDeleteAfter.substring(0, indexOfEndingChar);
     var withoutAmountOfTimeAndEndingChar = withoutDeleteAfter.substring(indexOfEndingChar + 1);
