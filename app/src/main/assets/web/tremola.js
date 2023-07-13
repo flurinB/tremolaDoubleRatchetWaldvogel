@@ -1219,8 +1219,8 @@ function setThreshold() {
 
 function set_locked_property(){
     for(var chat in tremola.chats){
-        // One recipient has one "@"-symbol, thus when 2"@"-symbols are in the recps2nm-string, two people are involved in the chat
-        var amountOfRecipients = recps2nm(tremola.chats[chat].members).split("@").length - 1;
+        var amountOfRecipients = tremola.chats[chat].members.length;
+        console.log("length here:", amountOfRecipients);
         if(amountOfRecipients == 2){
             tremola.chats[chat].locked = true;
         } else {
