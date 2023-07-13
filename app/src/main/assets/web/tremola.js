@@ -47,7 +47,8 @@ function menu_sync() {
 }
 */
 var timeThreshold;
-var del_msg_bool = false;
+//the bool seems not to be saved idk
+var del_msg_bool;//before = false;
 /**
  * Sets up the members scenario after the plus button was pressed in the chats scenario.
  */
@@ -894,6 +895,37 @@ function resetTremola() { // wipes browser-side content
 function persist() {
     // console.log(tremola);
     window.localStorage.setItem("tremola", JSON.stringify(tremola));
+    window.localStorage.setItem("dropdown", JSON.stringify(unitNumberTuple));
+}
+//TODO: this new here. test and check if used appropriately in code
+//TODO: saves the set dropdown settings for threshold. the unit number tuple is set by the setThreshold() function after the button is pressed and persistDropdown() is called inside setThreshold at the end
+function persistDropdown() {
+    window.localStorage.setItem("dropdown", JSON.stringify(unitNumberTuple));
+    console.log('json dropdown stringify: ', JSON.stringify(unitNumberTuple));//before setting a value this is undefined after: "json dropdown stringify:  {"selectValue":"seconds","textareaValue":"1"}"
+}
+//TODO: this new here. test and check if used appropriately in code
+//I think this was for testing purposes at the moment used inside setThreshold to set the unitNumberTuple maybe rename it to getUnitNumberTuple() minimize confusion
+//TODO: check if method could be replaced entierly by the line in l902 instead of it being a method idk what is better code style. as function it is neat and clearer idk
+function getDropdown() {
+    unitNumberTuple = JSON.parse(window.localStorage.getItem("dropdown"));
+    //logs for debug purposes
+    console.log('unitNumberTuple 0, 1 and 2 with parse from json: ', unitNumberTuple[0], unitNumberTuple[1], unitNumberTuple[2]);
+    console.log('json dropdown parse: ', JSON.parse(window.localStorage.getItem("dropdown")));
+}
+
+//TODO: do some test GIO
+//TODO: Infos: sets the dropdown menu settings and recovers the saved data if they are not empty aka already saved once
+function setDropdown() {
+    var dropdown = document.getElementById("time-select");
+    var textareaDrop = document.getElementById("timer-text");
+    unitNumberTuple = JSON.parse(window.localStorage.getItem("dropdown"));
+    var storedUnit = unitNumberTuple[0];//should be unit
+    var storedNumber = unitNumberTuple[1];
+    del_msg_bool = unitNumberTuple[2];
+    if (storedUnit && storedNumber) {
+        dropdown.value = storedUnit;
+        textareaDrop.value = storedNumber;
+    }
 }
 
 function b2f_local_peer(p, status) { // wireless peer: online, offline, connected, disconnected
@@ -1115,12 +1147,30 @@ function deleteOldMessages(chat) {
     }
 }
 
-//TODO: the threshold settings are I think reseted after closing and opening app investigate
+var textarea;
+var textareaValue;
+var dropDown;
+var selectValue;
+var unitNumberTuple = ["","",""];
 function setThreshold() {
-    var textarea = document.getElementById("timer-text");
-    var textareaValue = textarea.value;
-    var dropDown = document.getElementById("time-select");
-    var selectValue = dropDown.value;
+    textarea = document.getElementById("timer-text");//value as element
+    textareaValue = textarea.value;//value in numbers
+    dropDown = document.getElementById("time-select");//unit element
+    selectValue = dropDown.value;//the unit
+    //TODO: recover if saved the storage of the threshold from previous session.
+    //TODO: needs to check if it is entered to many times aka unnötiges abfragen/performance
+    if (!textareaValue && !selectValue) {
+        //if is entered when textarea and selectvalue are empty or default after restarting the app because the displayed inputs from saved storage does not trigger the entering values and selection I think
+        console.log("enters if statement in l 1151: ",selectValue,unitNumberTuple[0], textareaValue, unitNumberTuple[1]);
+        getDropdown();//setsThe unitnumbertuple from storage
+        console.log("enters if statement in l 1151: ",selectValue,unitNumberTuple[0], textareaValue, unitNumberTuple[1]);
+        //recovers the saved values from the storage with the tuple
+        textareaValue = unitNumberTuple[1];
+        selectValue = unitNumberTuple[0];
+        console.log("enters if statement in l 1151: ",selectValue,unitNumberTuple[0], textareaValue, unitNumberTuple[1]);
+    }
+
+    unitNumberTuple = [String(selectValue), String(textareaValue), del_msg_bool];
     var regex = /^\d+$/;
 
     if (regex.test(textareaValue) && del_msg_bool) { //bool check maybe obsolete because this cannot be reached without toggling on true
@@ -1136,16 +1186,19 @@ function setThreshold() {
         } else if (selectValue === "weeks") {
             timeThreshold = textareaValue * 60 * 60 * 1000 * 24 * 7;
         } else {
-            console.log("no unit selected");
+            console.log("no unit selected");//now problem is here
             return
         }
         //for debugging
         console.log("value in: unit of ", selectValue);
         console.log("threshold in milliseconds", timeThreshold);
     } else {
-        console.log("is not a number or del_msg_bool is false", textareaValue);
-        return
+        console.log("is not a number or del_msg_bool is false: ", textareaValue, del_msg_bool);//causes problems with textareaValue not being a number after closing and opening the app
+        return//after the toggle is switched on and off it console.logs the correct values already stored in there
     }
+    //TODO: test gio
+    persistDropdown();
+    setDropdown();
 }
 
 /**

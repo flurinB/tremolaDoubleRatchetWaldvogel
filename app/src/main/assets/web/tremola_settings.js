@@ -17,7 +17,7 @@ function get_default_settings() {
         'hide_forgotten_conv': true,
         'hide_forgotten_contacts': true,
         'timer_undelivered_messages': false
-        //TODO: add here 'timer_undelivered_messages': false
+
     }
 }
 
@@ -67,14 +67,17 @@ function applySetting(nm, val) {
             del_msg_bool = false;
             selection.style.display = "none";//makes the element not visible
           }
-        //deleteOldMessages();
+          //TODO: gio test here for dropdown
+          //for testing purpose
+          //getDropdown();//check where what implementation goes where
+          setThreshold();
     }
 
 }
 
 /**
  * Takes the switch state of val and puts it in the switch defined by nm, also applies it to UI.
- * @param nm {String} Name of the setting
+ * @param nm {String} Name of the settinggetDropdown(
  * @param val {Boolean} What its updated value should be
  */
 function setSetting(nm, val) {
