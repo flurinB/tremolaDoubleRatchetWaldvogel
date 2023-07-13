@@ -208,8 +208,7 @@ function menu_settings() {
     const c = document.getElementById("conversationTitle");
     c.style.display = null;
     c.innerHTML = "<div style='text-align: center;'><font size=+1><strong>Settings</strong></font></div>";
-    //TODO check if this works without errors GIO
-    //TODO: every time the menu button is set on settings it reloads the settings for thresold dropdown to be recovered
+    //setDropdown to load the correct values for textarea and dropdown menu after saving closing and opening the app again
     setDropdown();
 }
 

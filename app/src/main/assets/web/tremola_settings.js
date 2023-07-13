@@ -16,7 +16,7 @@ function get_default_settings() {
         'show_shortnames': true,
         'hide_forgotten_conv': true,
         'hide_forgotten_contacts': true,
-        'timer_undelivered_messages': false
+        'timer_undelivered_messages': false//added here for delete messages settings
 
     }
 }
@@ -57,19 +57,15 @@ function applySetting(nm, val) {
         load_chat_list();
     } else if (nm === 'hide_forgotten_contacts') {// Reload the contacts, toggling visibility of the forgotten ones
         load_contact_list();
-    } else if (nm === 'timer_undelivered_messages') {//GIO: new here for testing toggle
-        //TODO how to save the timer values persistently
+    } else if (nm === 'timer_undelivered_messages') {//new case for delete message setting
         var selection = document.getElementById("menuDiv");
           if (val) {
-            del_msg_bool = true;
+            del_msg_bool = true;//sets the boolean for the deletion
             selection.style.display = "block";//makes the element visible
           } else {
-            del_msg_bool = false;
+            del_msg_bool = false;//sets the boolean for the deletion
             selection.style.display = "none";//makes the element not visible
           }
-          //TODO: gio test here for dropdown
-          //for testing purpose
-          //getDropdown();//check where what implementation goes where
           setThreshold();
     }
 
