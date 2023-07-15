@@ -11,7 +11,7 @@ function get_default_settings() {
     return {
         'enable_preview': false,
         'background_map': true,
-        'pub_autoconnect': true,//in bachelor thesis: pubs are currently non-functional in Tremola maybe this is the reason it does not respond to any action
+        'pub_autoconnect': true,
         'wifi_autoconnect': true,
         'show_shortnames': true,
         'hide_forgotten_conv': true,
@@ -73,7 +73,7 @@ function applySetting(nm, val) {
 
 /**
  * Takes the switch state of val and puts it in the switch defined by nm, also applies it to UI.
- * @param nm {String} Name of the settinggetDropdown(
+ * @param nm {String} Name of the setting
  * @param val {Boolean} What its updated value should be
  */
 function setSetting(nm, val) {

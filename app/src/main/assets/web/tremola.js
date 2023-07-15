@@ -46,9 +46,12 @@ function menu_sync() {
   closeOverlay();
 }
 */
+
+/* Variables used for implementation of message deletion */
 var timeThreshold;
 var del_msg_bool;//before = false;
 var unitNumberTuple = ["","",""];
+
 /**
  * Sets up the members scenario after the plus button was pressed in the chats scenario.
  */
@@ -295,7 +298,7 @@ function new_post(s) {
     // TODO escapeHTML() might be the better choice here
     var draft = unicodeStringToTypedArray(document.getElementById('draft').value);
 
-    // If the message is self-deleting, format to standard used
+    // If the message is self-deleting, format to standard used (;date;of;message;deletion;t;body)
     if(draft.startsWith(":deleteafter;")){
        draft = getNewDraftWithDateOfMessageDeletion(draft);
     }
@@ -308,7 +311,7 @@ function new_post(s) {
     closeOverlay();
 }
 
-/* This function takes a message with the prefix ':deleteafter;' (should be in format ":deleteafter;(0-9)*;(s|m|h|d|w)")
+/* This function takes a message with the prefix ':deleteafter;' (should be in format ":deleteafter;(0-9)+;(s|m|h|d|w)")
 and gives back the date when the message should be deleted*/
 function getNewDraftWithDateOfMessageDeletion(draft){
     //also removes the first ";"
@@ -382,7 +385,7 @@ function load_chat(nm) {
     ch = tremola.chats[nm];
     pl = document.getElementById("lst:posts");
 
-    // deletes the expired messages after the threshold time is met
+    // deletes the expired messages after the threshold time is met (for self-deleting messages, as well as the local delete-message settings)
     deleteOldMessages(nm);
 
     // Clears the current lists of posts.
@@ -432,7 +435,7 @@ function load_chat_title(ch) {
  * Loads the list of chats in the chats scenario. Chats are sorted by touch date.
  */
 function load_chat_list() {
-    // Set the "locked" property for each chat
+    // Set the "locked" property for each chat (true if double-ratchet encrypted)
     set_locked_property();
 
     const meOnly = recps2nm([myId]);
@@ -898,11 +901,10 @@ function persist() {
     window.localStorage.setItem("tremola", JSON.stringify(tremola));
 }
 /**
-*   Saves the set dropdown settings for the threshold to local storage
+*   Saves the set dropdown settings for the message-deletion threshold and boolean to local storage
 */
 function persistDropdown() {
     window.localStorage.setItem("dropdown", JSON.stringify(unitNumberTuple));
-    //console.log('json dropdown stringify: ', JSON.stringify(unitNumberTuple));
 }
 
 /**
@@ -910,9 +912,6 @@ function persistDropdown() {
 */
 function getDropdown() {
     unitNumberTuple = JSON.parse(window.localStorage.getItem("dropdown"));
-    //logs for debug purposes
-    //console.log('unitNumberTuple 0, 1 and 2 with parse from json: ', unitNumberTuple[0], unitNumberTuple[1], unitNumberTuple[2]);
-    //console.log('json dropdown parse: ', JSON.parse(window.localStorage.getItem("dropdown")));
 }
 
 /**
@@ -924,7 +923,7 @@ function setDropdown() {
     var textareaDrop = document.getElementById("timer-text");
     unitNumberTuple = JSON.parse(window.localStorage.getItem("dropdown"));//this object is null when app is started for the first time ever on new installation
     if (unitNumberTuple != null && unitNumberTuple != undefined) {//to prevent the uncaught error this if statement is add
-        var storedUnit = unitNumberTuple[0];//before: uncaught error null when the app is started first time ever
+        var storedUnit = unitNumberTuple[0];
         var storedNumber = unitNumberTuple[1];
         del_msg_bool = unitNumberTuple[2];
         if (storedUnit && storedNumber) {
@@ -1022,7 +1021,7 @@ function b2f_new_event(e) {
                                      //  considered read, if the user visited the chat without connection between the
                                      //  the time of sending and reception.
             };
-
+            // Handle a post with the prefix ";date;of;message;deletion;"
             if(ch["posts"][e.header.ref].body.startsWith(";date;of;message;deletion;")){
                 handleMessageWithDeletionOnReceiver(ch["posts"][e.header.ref]);
             }
@@ -1042,10 +1041,10 @@ function b2f_new_event(e) {
     must_redraw = true;
 }
 
-/* This function takes care of self-deleting messages on the receiving side*/
+/* This function takes care of self-deleting messages on the receiving side, saving the date of deletion in a property of the post*/
 function handleMessageWithDeletionOnReceiver(p){
     var body = p.body;
-    var bodyWithoutPrefix = body.substring(26);
+    var bodyWithoutPrefix = body.substring(26); //26 because that is the length of the message-prefix (;date;of;message;deletion;)
     var indexOfEndingChar = bodyWithoutPrefix.indexOf(';');
     var timeOfDeletion = bodyWithoutPrefix.substring(0,indexOfEndingChar).trim();
     p.deleteAfter = parseInt(timeOfDeletion);
@@ -1119,7 +1118,7 @@ function b2f_initialize(id) {
         tremola.settings = {}
     let nm;
     for (nm in tremola.settings)
-        setSetting(nm, tremola.settings[nm])//TODO Figure out what this does
+        setSetting(nm, tremola.settings[nm])
     load_chat_list()
     load_contact_list()
     closeOverlay();
@@ -1128,10 +1127,10 @@ function b2f_initialize(id) {
 
 /**
  * Deletes the posts that exceed the specified threshold of time in the settings.
- * Uses the firstRead property of the posts to determine whether this threshold has been exceeded
+ * Uses the when property of the posts to determine whether this threshold has been exceeded
+ * also takes care of the self-deleting messages by checking whether the "deleteAfter" property exists and has been exceeded
  */
 function deleteOldMessages(chat) {
-    //TODO TEST
     for (var post in tremola.chats[chat].posts) {
           let today = new Date();
           //if the post has first been read more than a certain amount of time, delete it
@@ -1170,22 +1169,15 @@ function setThreshold() {
     getDropdown();
     //if this data is not undefined or not null enter if statement
     if (!textareaValue && !selectValue && unitNumberTuple != null && unitNumberTuple != undefined) {
-        //if is entered when textarea and selectvalue are empty or default after restarting the app because the displayed inputs from saved storage does not trigger the entering values and selection
-        //debug reasons
-        //console.log("enters if statement in l 1151: ",selectValue,unitNumberTuple[0], textareaValue, unitNumberTuple[1]);
-        //console.log("enters if statement in l 1151: ",selectValue,unitNumberTuple[0], textareaValue, unitNumberTuple[1]);
         //recovers the saved values from the storage with the tuple
         textareaValue = unitNumberTuple[1];
         selectValue = unitNumberTuple[0];
-        //console.log("enters if statement in l 1151: ",selectValue,unitNumberTuple[0], textareaValue, unitNumberTuple[1]);
     }
     //unitNumberTuple is loaded with the current values inside the textarea and dropdown menu in the gui
     unitNumberTuple = [String(selectValue), String(textareaValue), del_msg_bool];
     var regex = /^\d+$/;
     //checks the values and boolean to set the correct amount of milliseconds
     if (regex.test(textareaValue) && del_msg_bool) {
-        //debug reasons
-        //console.log("is a number", textareaValue);
         if (selectValue === "seconds") {
             timeThreshold = textareaValue * 1000;
         } else if (selectValue === "minutes") {
@@ -1206,7 +1198,7 @@ function setThreshold() {
         console.log("threshold in milliseconds", timeThreshold);
     } else {
         console.log("is not a number or del_msg_bool is false: ", textareaValue, del_msg_bool);
-        return//after the toggle is switched on and off it console.logs the correct values already stored in there
+        return
     }
     persistDropdown();
     setDropdown();

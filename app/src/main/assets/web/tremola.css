@@ -218,7 +218,7 @@ textarea {
     margin-top: 6px;
     font-weight: 500;
 }
-/* new settings by Gio */
+
 .threshold {
     display: flex;
     align-items: center;
@@ -232,7 +232,7 @@ textarea {
     display: flex;
     justify-content: space-between;
 }
-/* idk it seems as it does not make any difference */
+
 #btn:timer {
   margin-left: 5px;
 }
