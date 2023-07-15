@@ -1050,14 +1050,17 @@ function handleMessageWithDeletionOnReceiver(p){
     p.deleteAfter = parseInt(timeOfDeletion);
     p.body = bodyWithoutPrefix.substring(timeOfDeletion.length);
     p.body = p.body.substring(1);
-    var dateOfDeletion = new Date(p.deleteAfter),
-        dateFormat = [
-                   dateOfDeletion.getDate(),
-                   dateOfDeletion.getMonth()+1,
-                   dateOfDeletion.getFullYear()].join('/')+' '+
-                  [dateOfDeletion.getHours(),
-                   dateOfDeletion.getMinutes(),
-                   dateOfDeletion.getSeconds()].join(':')
+    var dateOfDeletion = new Date(p.deleteAfter);
+    var dateFormat = [
+          dateOfDeletion.getDate().toString().padStart(2, '0'),
+          (dateOfDeletion.getMonth() + 1).toString().padStart(2, '0'),
+          dateOfDeletion.getFullYear()
+        ].join('/') + ' ' +
+        [dateOfDeletion.getHours().toString().padStart(2, '0'),
+         dateOfDeletion.getMinutes().toString().padStart(2, '0'),
+         dateOfDeletion.getSeconds().toString().padStart(2, '0')
+        ].join(':');
+
     //TODO Add color for message deletion text
     p.body = p.body + "\n\nThis Message will be deleted on " + dateFormat ;
 }
